@@ -38,11 +38,11 @@ function Dashboard(){
     </div>
     <div>
       <h2>3,221</h2>
-      <p>Order</p>
+      <p>TVL</p>
     </div>
     <div>
-      <h2>3,221</h2>
-      <p>Order</p>
+      <h2>21</h2>
+      <p>Days</p>
     </div>
   </DashboardView>
 }
