@@ -10,7 +10,7 @@ export default function Layout({children}: { children: React.ReactNode }){
   return <>
     <div>
       <Head>
-        <title>DAC3</title>
+        <title>Plutus3</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
         <meta name="description" content="Design Automation Conference based on web3"/>
 

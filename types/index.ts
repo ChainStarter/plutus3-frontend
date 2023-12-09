@@ -1,6 +1,7 @@
 export interface IAppState {
   themeMode: THEME_MODE_ENUM,
   language: LANGUAGE_ENUM,
+  showConnectModal: boolean
 }
 export enum THEME_MODE_ENUM {
   light = "light",
@@ -22,4 +23,16 @@ export interface IPlan {
   startAt: number;
   times: number;
   status: 0|1
+}
+export interface ISupportChainInfo{
+  name: string
+  symbol: string
+  chainId: number
+  rpcUrl: string
+  icon: string
+}
+export enum SUPPORT_CHAIN_ID {
+  GOERLI= 5,
+  AVALANCHE= 43114,
+  POLYGON= 137
 }

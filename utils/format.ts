@@ -14,6 +14,12 @@ export function fromValue(num: string | number, decimals?: number, dp: number = 
   }
   return new BigNumber(num).div(10 ** (decimals || 0)).dp(dp, roundingMode).toString()
 }
+export function formatValue(num: string | number, decimals?: number, dp: number = 4, roundingMode:0|1 = 1): string {
+  if (!num) {
+    return '0'
+  }
+  return new BigNumber(num).div(10 ** (decimals || 0)).dp(dp, roundingMode).toFormat()
+}
 
 export function toValue(num: string | number, decimals: number = 0, ): string {
   if (!num) {

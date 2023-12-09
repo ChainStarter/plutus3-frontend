@@ -1,5 +1,8 @@
 import type { AddEthereumChainParameter } from '@web3-react/types'
-import { ChainId } from '@chainstarter/multicall-client.js'
+import {ISupportChainInfo, SUPPORT_CHAIN_ID} from "../../types";
+import GoerliImg from '/public/image/goerli.png'
+import AvalancheImg from '/public/image/avalanche.png'
+import PolygonImg from '/public/image/polygon.png'
 
 interface BasicChainInformation {
   urls: string[]
@@ -11,22 +14,51 @@ interface ExtendedChainInformation extends BasicChainInformation {
 }
 type ChainConfig = { [chainId: number]: BasicChainInformation | ExtendedChainInformation }
 
-export const CHAINS_CONFIG: ChainConfig = {
-  [ChainId.GOERLI]: {
-    urls: ["https://goerli.infura.io/v3/24eed2d69d2b4dcba4339f5a81908cb8"].filter(Boolean),
+export const SUPPORT_CHAIN_INFO: {[key: number]: ISupportChainInfo} = {
+  [SUPPORT_CHAIN_ID.GOERLI]: {
     name: 'Goerli',
+    symbol: 'ETH',
+    rpcUrl: "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+    chainId: SUPPORT_CHAIN_ID.GOERLI,
+    icon: GoerliImg.src
+  },
+  [SUPPORT_CHAIN_ID.POLYGON]: {
+    name: 'Polygon',
+    symbol: 'MATIC',
+    rpcUrl: "https://polygon.llamarpc.com",
+    chainId: SUPPORT_CHAIN_ID.POLYGON,
+    icon: PolygonImg.src
+  },
+  [SUPPORT_CHAIN_ID.AVALANCHE]: {
+    name: 'Avalanche C-Chain',
+    symbol: 'AVAX',
+    rpcUrl: "https://api.avax.network/ext/bc/C/rpc",
+    chainId: SUPPORT_CHAIN_ID.AVALANCHE,
+    icon: AvalancheImg.src
+  }
+}
+
+
+
+
+
+export const CHAINS_CONFIG: ChainConfig = {
+  [SUPPORT_CHAIN_ID.GOERLI]: {
+    urls: [SUPPORT_CHAIN_INFO[SUPPORT_CHAIN_ID.GOERLI].rpcUrl],
+    name: SUPPORT_CHAIN_INFO[SUPPORT_CHAIN_ID.GOERLI].name,
     blockExplorerUrls: ['']
   },
-  [ChainId.BSC]: {
-    urls: ['https://bsc-dataseed.binance.org'].filter(Boolean),
-    name: 'Binance Smart Chain',
-    nativeCurrency: {
-      name: 'BNB',
-      symbol: 'BNB',
-      decimals: 18,
-    },
-    blockExplorerUrls: ['https://bscscan.com']
-  }
+  [SUPPORT_CHAIN_ID.AVALANCHE]: {
+    urls: [SUPPORT_CHAIN_INFO[SUPPORT_CHAIN_ID.AVALANCHE].rpcUrl],
+    name: SUPPORT_CHAIN_INFO[SUPPORT_CHAIN_ID.AVALANCHE].name,
+    blockExplorerUrls: ['']
+  },
+  [SUPPORT_CHAIN_ID.POLYGON]: {
+    urls: [SUPPORT_CHAIN_INFO[SUPPORT_CHAIN_ID.POLYGON].rpcUrl],
+    name: SUPPORT_CHAIN_INFO[SUPPORT_CHAIN_ID.POLYGON].name,
+    blockExplorerUrls: ['']
+  },
+
 }
 export function getAddChainParameters(chainId: number): AddEthereumChainParameter | number {
   const chainInformation = CHAINS_CONFIG[chainId] as ExtendedChainInformation

@@ -1,3 +1,5 @@
+import Web3 from "web3";
+
 export function decode16(hex_:string) {
   let hex = hex_.toString();//force conversion
   let str = '';
@@ -24,3 +26,7 @@ export const clearWalletConnectLocalStore = () => {
     }
   }
 }
+export const getContract = (library:any, abi:any, address:string) => {
+  const web3 = new Web3(library.provider);
+  return new web3.eth.Contract(abi, address);
+};

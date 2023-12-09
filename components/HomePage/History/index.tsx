@@ -14,12 +14,13 @@ export default function History(){
     }
   ]
   return <HistoryView>
+    <h1>Logs</h1>
     <div className="history-item history-title">
-      <div>时间</div>
-      <div>消耗USDT</div>
-      <div>获得ETH</div>
-      <div>价格</div>
-      <div>交易哈希</div>
+      <div>Time</div>
+      <div>Buy val(USDT)</div>
+      <div>Buy val(ETH)</div>
+      <div>Price</div>
+      <div>Hash</div>
     </div>
 
     {
