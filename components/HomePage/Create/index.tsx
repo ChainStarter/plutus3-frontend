@@ -68,7 +68,7 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
   useMemo(() => {
     if (plan) {
       setDays(String(plan.frequency))
-      setAmount(fromValue(plan.frequency, usdtDecimals))
+      setAmount(fromValue(plan.amount, usdtDecimals))
     }
   }, [plan, usdtDecimals])
   const showApprove = useMemo(() => {
