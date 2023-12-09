@@ -12,6 +12,7 @@ import React, {useMemo, useState} from "react";
 import LoadingIcon from "/public/image/loading.svg";
 import {setShowSuccessModal} from "../../../context/store/app";
 import {useDispatch} from "react-redux";
+import BigNumber from "bignumber.js";
 
 export default function User({
                                plan,
@@ -69,11 +70,11 @@ export default function User({
       </div>
       <div>
         <p>Day buy vol</p>
-        <h2>{formatValue(plan.frequency, USDT_ADDRESS_MAP[chainId as SUPPORT_CHAIN_ID]?.decimals)}USDT/D</h2>
+        <h2>-USDT/D</h2>
       </div>
       <div>
         <p>Remaining(USDT)</p>
-        <h2>{formatValue(plan.amount, USDT_ADDRESS_MAP[chainId as SUPPORT_CHAIN_ID]?.decimals)}</h2>
+        <h2>-</h2>
       </div>
       <div className="actions">
         <div className="action-btn" onClick={() => setTab(0)}>

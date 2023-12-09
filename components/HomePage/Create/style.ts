@@ -159,6 +159,22 @@ export const CreateView = styled.div`
         }
       }
     }
+    .total-amount{
+      margin-top: 30px;
+      &>div{
+        font-family: PingFang SC;
+        font-weight: 500;
+        color: #ffffff;
+        font-size: 20px;
+        line-height: 28px;
+        margin-top: 16px;
+        background: rgba(255,255,255,0.06);
+        //border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 8px;
+        padding: 12px 16px;
+        box-sizing: border-box;
+      }
+    }
     .submit-btn{
       height:48px;
       background:#8a6cff;

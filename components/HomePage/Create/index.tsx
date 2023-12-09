@@ -25,15 +25,22 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
   const {allowance, updateAllowance} = useUsdtAllowance()
   const dispatch = useDispatch()
   const [loading, setLoading] = useState<boolean>(false)
+
+  const totalAmount = useMemo(() => {
+    if (!amount || !days){
+      return '0';
+    }
+    return +amount * +days
+  }, [amount, days])
   const onCreate = (isUpdate:boolean) => {
-    if (loading || !amount || +amount <= 0) {
+    if (loading || !totalAmount || +totalAmount <= 0) {
       return
     }
     setLoading(true)
     const contract = getContract(library, ABI_DCA, DCA_CONTRACT_MAP[chainId as SUPPORT_CHAIN_ID])
     contract.methods[isUpdate ? 'updatePlan' : 'createPlan'](
       days,
-      toValue(amount, usdtDecimals)
+      toValue(totalAmount, usdtDecimals)
     ).send({from: account}).on("receipt", async function () {
       await getPlan()
       await updateAllowance()
@@ -72,14 +79,14 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
     }
   }, [plan, usdtDecimals])
   const showApprove = useMemo(() => {
-    if (!amount) {
+    if (!totalAmount) {
       return false
     }
-    if (new BigNumber(allowance).lt(toValue(amount, usdtDecimals))) {
+    if (new BigNumber(allowance).lt(toValue(totalAmount, usdtDecimals))) {
       return true
     }
     return false
-  }, [allowance, amount, usdtDecimals])
+  }, [allowance, totalAmount, usdtDecimals])
   return <CreateView>
     <div className="create-panel">
       <h1>{plan ? 'Update' : 'Create'} a DCA plan</h1>
@@ -123,7 +130,7 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
         <div className="balance">Balance: {formatValue(usdtBalance, usdtDecimals, 1)}USDT</div>
       </div>
       <div className="cycle-time">
-        <p className="form-title">Cycle time</p>
+        <p className="form-title">Complete cycle</p>
         <div className="cycle-time-box">
           <div className="cycle-time-input">
             <input className="primary-input" type="number" placeholder="days" value={days}
@@ -133,6 +140,10 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
           <div className={cs("cycle-time-btn", +days === 15 && "active")} onClick={() => setDays('15')}>15</div>
           <div className={cs("cycle-time-btn", +days === 30 && "active")} onClick={() => setDays('30')}>30</div>
         </div>
+      </div>
+      <div className="total-amount">
+        <p className="form-title">Total spend</p>
+        <div>{new BigNumber(totalAmount).toFormat()}USDT</div>
       </div>
       {
         (function () {
