@@ -10,12 +10,14 @@ import {connectors} from "../connectors/V2/walletConnectV2";
 import "../styles/reset.css"
 import "../styles/font.css"
 import ConnectWalletModal from "../components/ConnectWalletModal";
+import SuccessModal from "../components/SuccessModal";
 
 function UData(){
   useLocalData()
   return <>
     <GlobalStyle/>
     <ConnectWalletModal/>
+    <SuccessModal/>
   </>
 }
 

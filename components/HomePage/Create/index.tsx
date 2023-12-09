@@ -6,7 +6,7 @@ import {useDispatch} from "react-redux";
 import {getContract} from "../../../utils";
 import {ABI_DCA, ABI_ERC20, DCA_CONTRACT_MAP, USDT_ADDRESS_MAP} from "../../../types/constant";
 import {IPlan, SUPPORT_CHAIN_ID} from "../../../types";
-import {formatValue, toValue} from "../../../utils/format";
+import {formatValue, fromValue, toValue} from "../../../utils/format";
 import BigNumber from "bignumber.js";
 import {CreateView} from "./style";
 import USDTIcon from "/public/image/usdt.png";
@@ -14,10 +14,10 @@ import SelectIcon from "/public/image/select.png";
 import ChangeIcon from "/public/image/change.png";
 import ETHIcon from "/public/image/eth.png";
 import cs from "classnames";
-import {setShowConnectModal} from "../../../context/store/app";
+import {setShowConnectModal, setShowSuccessModal} from "../../../context/store/app";
 import Poster1Img from "/public/image/poster1.png";
 
-export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPlan|null }) {
+export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPlan | null }) {
   const {account, library, chainId} = useActiveWeb3React()
   const [amount, setAmount] = useState<string>('');
   const [days, setDays] = useState<string>('');
@@ -25,19 +25,20 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
   const {allowance, updateAllowance} = useUsdtAllowance()
   const dispatch = useDispatch()
   const [loading, setLoading] = useState<boolean>(false)
-  const onCreate = () => {
-    if (loading) {
+  const onCreate = (isUpdate:boolean) => {
+    if (loading || !amount || +amount <= 0) {
       return
     }
     setLoading(true)
     const contract = getContract(library, ABI_DCA, DCA_CONTRACT_MAP[chainId as SUPPORT_CHAIN_ID])
-    contract.methods.createPlan(
+    contract.methods[isUpdate ? 'updatePlan' : 'createPlan'](
       days,
       toValue(amount, usdtDecimals)
     ).send({from: account}).on("receipt", async function () {
       await getPlan()
       await updateAllowance()
       await updateBalance()
+      dispatch(setShowSuccessModal(true))
       setLoading(false)
     })
       .on("error", (error: any) => {
@@ -56,6 +57,7 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
       toValue(amount, usdtDecimals)
     ).send({from: account}).on("receipt", async function () {
       await updateAllowance()
+      dispatch(setShowSuccessModal(true))
       setLoading(false)
     })
       .on("error", (error: any) => {
@@ -63,6 +65,12 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
         setLoading(false)
       });
   }
+  useMemo(() => {
+    if (plan) {
+      setDays(String(plan.frequency))
+      setAmount(fromValue(plan.frequency, usdtDecimals))
+    }
+  }, [plan, usdtDecimals])
   const showApprove = useMemo(() => {
     if (!amount) {
       return false
@@ -74,8 +82,9 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
   }, [allowance, amount, usdtDecimals])
   return <CreateView>
     <div className="create-panel">
-      <h1>Create a DCA plan</h1>
-      <p>Create your fixed investment plan, determine your investment amount and determine the periodic schedule.</p>
+      <h1>{plan ? 'Update' : 'Create'} a DCA plan</h1>
+      <p>{plan ? 'Update' : 'Create'} your fixed investment plan, determine your investment amount and determine the
+        periodic schedule.</p>
       <div className="select-assets">
         <div className="select-assets-item">
           <p className="form-title">Spend</p>
@@ -135,7 +144,12 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
               {loading ? 'waiting...' : "Approve"}
             </div>
           }
-          return <div className="submit-btn" onClick={onCreate}>
+          if (plan) {
+            return <div className="submit-btn" onClick={() => onCreate(true)}>
+              {loading ? 'waiting...' : "Update"}
+            </div>
+          }
+          return <div className="submit-btn" onClick={() => onCreate(false)}>
             {loading ? 'waiting...' : "Create"}
           </div>
         }())

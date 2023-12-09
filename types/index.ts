@@ -1,7 +1,8 @@
 export interface IAppState {
   themeMode: THEME_MODE_ENUM,
   language: LANGUAGE_ENUM,
-  showConnectModal: boolean
+  showConnectModal: boolean,
+  showSuccessModal: boolean
 }
 export enum THEME_MODE_ENUM {
   light = "light",

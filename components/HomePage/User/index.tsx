@@ -5,10 +5,43 @@ import ArrowDIcon from '/public/image/arrow-d.png'
 import {IPlan, SUPPORT_CHAIN_ID} from "../../../types";
 import useActiveWeb3React from "../../../hooks/useActiveWeb3React";
 import {formatValue} from "../../../utils/format";
-import {USDT_ADDRESS_MAP} from "../../../types/constant";
+import {ABI_DCA, DCA_CONTRACT_MAP, USDT_ADDRESS_MAP} from "../../../types/constant";
+import cs from "classnames";
+import {getContract} from "../../../utils";
+import React, {useMemo, useState} from "react";
+import LoadingIcon from "/public/image/loading.svg";
+import {setShowSuccessModal} from "../../../context/store/app";
+import {useDispatch} from "react-redux";
 
-export default function User({plan, setTab}: {plan:IPlan, setTab: (tab: 0|1) => void}) {
-  const {account, chainId} = useActiveWeb3React()
+export default function User({
+                               plan,
+                               setTab,
+                               getPlan
+                             }: { plan: IPlan, setTab: (tab: 0 | 1) => void, getPlan: () => void }) {
+  const {account, chainId, library} = useActiveWeb3React()
+  const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
+  const onChangeStatus = (status: 0 | 1) => {
+    if (loading) {
+      return
+    }
+    setLoading(true)
+    const contract = getContract(library, ABI_DCA, DCA_CONTRACT_MAP[chainId as SUPPORT_CHAIN_ID])
+    contract.methods[['stopPlan', 'startPlan'][status]]().send({from: account}).on("receipt", async function () {
+      await getPlan()
+      dispatch(setShowSuccessModal(true))
+      setLoading(false)
+    })
+      .on("error", (error: any) => {
+        console.log("error", error)
+        setLoading(false)
+      });
+  }
+  useMemo(() => {
+    if (!plan) {
+      setTab(0)
+    }
+  }, [plan])
   return <UserView>
     <div className="user-item">
       <div className="tokens">
@@ -44,17 +77,14 @@ export default function User({plan, setTab}: {plan:IPlan, setTab: (tab: 0|1) => 
       </div>
       <div className="actions">
         <div className="action-btn" onClick={() => setTab(0)}>
-          Setting
+          Edit
+        </div>
+        <div className={cs("action-btn", plan.status === 1 && "btn-error", loading && "loading")}
+             onClick={() => onChangeStatus(plan.status === 1 ? 0 : 1)}>
+          {loading ? <img src={LoadingIcon.src} className="loading-ani" alt=""/> : ["Start", "Stop"][plan.status]}
         </div>
       </div>
-      {
-        +plan.status === 0 && <div className="tag-stop">Stop</div>
-      }
-
-      {
-        +plan.status === 1 && <div className="tag-start">Starting</div>
-      }
-
+      <div className={["tag-stop", "tag-start"][plan.status]}>{["Stopped", "Started"][plan.status]}</div>
     </div>
   </UserView>
 }

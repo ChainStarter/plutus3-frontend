@@ -32,4 +32,18 @@ export const GlobalStyle = createGlobalStyle`
         -webkit-appearance: none;
       }
   }
+  @keyframes loading-ani {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(180deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  .loading-ani {
+    animation: loading-ani 2s linear infinite;
+  }
 `;

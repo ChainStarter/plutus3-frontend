@@ -58,17 +58,30 @@ export const UserView = styled.div`
     }
 
     .actions {
+      display: flex;
+      flex-direction: row;
       .action-btn {
         cursor: pointer;
-        padding: 5px 10px;
+        padding: 10px 15px;
         background: #8a6cff;
         border-radius: 10px;
-        box-shadow: 0px -8px 32px #1e0d49, 0px 0px 0px rgba(16, 0, 51, 0.4), 0px 2px 4px rgba(16, 0, 51, 0.39), 0px 8px 8px rgba(16, 0, 51, 0.34), 0px 19px 11px rgba(16, 0, 51, 0.2), 0px 34px 14px rgba(16, 0, 51, 0.06), 0px 53px 16px rgba(16, 0, 51, 0.01);
+        //box-shadow: 0px -8px 20px #1e0d49, 0px 0px 0px rgba(16, 0, 51, 0.4), 0px 2px 4px rgba(16, 0, 51, 0.39), 0px 8px 8px rgba(16, 0, 51, 0.34), 0px 19px 11px rgba(16, 0, 51, 0.2), 0px 34px 14px rgba(16, 0, 51, 0.06), 0px 53px 16px rgba(16, 0, 51, 0.01);
         font-family: PingFang SC;
         font-weight: 600;
         color: #ffffff;
         font-size: 14px;
         line-height: 25px;
+        margin: 5px;
+        transition: all 0.3s ease-in-out;
+        &:hover{
+          transform: scale(1.05);
+        }
+        &.btn-error{
+          background: red;
+        }
+        &>img{
+          width: 20px;
+        }
       }
     }
 

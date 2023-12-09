@@ -8,7 +8,8 @@ import i18next from "i18next";
 const initialState: IAppState = {
   themeMode: THEME_MODE_ENUM.dark,
   language: LANGUAGE_ENUM.en_US,
-  showConnectModal: false
+  showConnectModal: false,
+  showSuccessModal: false,
 };
 
 export const AppSlice = createSlice({
@@ -26,12 +27,16 @@ export const AppSlice = createSlice({
     },
     setShowConnectModal: (state, action: PayloadAction<boolean>) => {
       state.showConnectModal = action.payload;
+    },
+    setShowSuccessModal: (state, action: PayloadAction<boolean>) => {
+      state.showSuccessModal = action.payload;
     }
   },
 });
 export const {
   setThemeMode,
   setLanguage,
-  setShowConnectModal
+  setShowConnectModal,
+  setShowSuccessModal,
 } = AppSlice.actions;
 export default AppSlice.reducer;

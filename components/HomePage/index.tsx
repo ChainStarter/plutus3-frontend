@@ -42,7 +42,7 @@ export default function HomePage() {
           amount: data[2],
           startAt: data[3],
           times: data[4],
-          status: data[5]
+          status: (+data[5]) as 0|1
         })
       } else {
       }
@@ -70,7 +70,7 @@ export default function HomePage() {
       </div>
       {
         plan && <div style={{display: tab === 1 ? "block" : "none"}}>
-          <User plan={plan} setTab={setTab}/>
+          <User plan={plan} setTab={setTab} getPlan={getPlan}/>
           <History/>
         </div>
       }
