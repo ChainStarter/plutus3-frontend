@@ -27,9 +27,9 @@ export default function User({
   const ethPrice = useEthPrice()
   const [loading, setLoading] = useState(false)
   const [graphData, setGraphData] = useState<{
-    planAmount: "0",// 计划总投入多少usdt
-    investAmount: "0",// 已经投入的usdt的量
-    totalBuy: "0" // 总计买了多少eth
+    planAmount: "0",
+    investAmount: "0",
+    totalBuy: "0"
   }>({
     planAmount: "0",
     investAmount: "0",

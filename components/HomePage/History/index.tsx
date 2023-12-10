@@ -11,10 +11,10 @@ import BigNumber from "bignumber.js";
 export default function History(){
   const {account, chainId} = useActiveWeb3React()
   const [history, setHistory] = useState<{
-    investAt: number,//定投时间
-    investAmount: string,//总定投usdt
-    amount: string,//单次定投usdt
-    ethReceived: string//收到的ETH
+    investAt: number,
+    investAmount: string,
+    amount: string,
+    ethReceived: string,
     hash: string
   }[]>([])
   const getHistory = () => {

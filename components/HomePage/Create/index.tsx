@@ -20,11 +20,8 @@ import Poster1Img from "/public/image/poster1.png";
 
 export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPlan | null }) {
   const {account, library, chainId} = useActiveWeb3React()
-  // 每次定投多少
   const [amount, setAmount] = useState<string>('');
-  // 间隔多久投一次 interval
   const [tap, setTap] = useState<string>('');
-  // 总投资次数 times
   const [count, setCount] = useState<string>('')
   const {balance: usdtBalance, updateBalance, decimals: usdtDecimals} = useUsdtBalance()
   const {allowance, updateAllowance} = useUsdtAllowance()
@@ -93,7 +90,6 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
   useMemo(() => {
     if (plan &&+allowance>0&& !setRef.current) {
       setRef.current = true
-      // 总共周期 = 授权量 / 一个周期的量 * 周期
       const count_ = new BigNumber(allowance).div(plan.amount).toString()
       setCount(count_ || '0')
     }
