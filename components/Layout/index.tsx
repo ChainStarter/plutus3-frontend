@@ -1,6 +1,6 @@
 import Head from "next/head";
 import React, {useEffect, useState} from "react";
-import Favicon from '/public/image/logo.png'
+import Favicon from '/public/image/favicon.ico'
 
 export default function Layout({children}: { children: React.ReactNode }){
   const [pageLoading, setPageLoading] = useState<boolean>(true)

@@ -1,5 +1,5 @@
 import useActiveWeb3React from "../../../hooks/useActiveWeb3React";
-import {useMemo, useState} from "react";
+import {useMemo, useRef, useState} from "react";
 import useUsdtBalance from "../../../hooks/useUsdtBalance";
 import useUsdtAllowance from "../../../hooks/useUsdtAllowance";
 import {useDispatch} from "react-redux";
@@ -32,7 +32,7 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
   const [loading, setLoading] = useState<boolean>(false)
 
   const totalAmount = useMemo(() => {
-    if (!amount || !days){
+    if (!amount || !count){
       return '0';
     }
     return +amount * +count
@@ -77,15 +77,21 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
         setLoading(false)
       });
   }
+  const setRef: any = useRef()
   useMemo(() => {
-    if (plan) {
+    if (plan && !setRef.current) {
       setDays(new BigNumber(plan.frequency).div(dimensions).dp(0, 1).toString())
       setAmount(fromValue(plan.amount, usdtDecimals))
+    }
+  }, [plan, usdtDecimals, allowance])
+  useMemo(() => {
+    if (plan &&+allowance>0&& !setRef.current) {
+      setRef.current = true
       // 总共周期 = 授权量 / 一个周期的量 * 周期
       const count_ = new BigNumber(allowance).div(plan.amount).toString()
       setCount(count_)
     }
-  }, [plan, usdtDecimals])
+  }, [plan, allowance])
   const showApprove = useMemo(() => {
     if (!totalAmount) {
       return false
