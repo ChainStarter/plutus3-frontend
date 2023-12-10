@@ -1,5 +1,5 @@
 import {HistoryView} from "./style";
-import {formatValue, fromValue, toFormatAccount} from "../../../utils/format";
+import {doubleData, formatValue, fromValue, toFormatAccount} from "../../../utils/format";
 import axios from "axios";
 import {useMemo, useState} from "react";
 import useActiveWeb3React from "../../../hooks/useActiveWeb3React";
@@ -58,13 +58,16 @@ address
       history.map((item, index) => <div className="history-item" key={index}>
         <div>{moment(item.investAt * 1000).format('YYYY-MM-DD HH:mm:ss')}</div>
         <div>{formatValue(item.amount, USDT_ADDRESS_MAP[chainId as SUPPORT_CHAIN_ID]?.decimals)}</div>
-        <div>{formatValue(item.ethReceived, 18, 12)}</div>
+        {/*todo*/}
+        <div>{formatValue(doubleData(item.ethReceived, 'mul'), 18, 4)}</div>
         <div>{new BigNumber(
           fromValue(item.amount, USDT_ADDRESS_MAP[chainId as SUPPORT_CHAIN_ID]?.decimals, 18)
         ).div(
-          fromValue(item.ethReceived, 18, 18)
+          fromValue(doubleData(item.ethReceived, 'mul'), 18, 18)
         ).dp(2).toFormat()}</div>
-        <a href={'https://goerli.etherscan.io/tx/'+item.hash} target="_blank" rel="noreferrer">{item.hash.slice(0, 8)}...</a>
+        <div>
+          <a href={'https://goerli.etherscan.io/tx/'+item.hash} target="_blank" rel="noreferrer">{item.hash.slice(0, 8)}...</a>
+        </div>
       </div>)
     }
   </HistoryView>

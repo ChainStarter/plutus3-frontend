@@ -27,12 +27,12 @@ export const HistoryView = styled.div`
     &>div{
       word-break: break-all;
       padding: 5px;
-    }
-    &>a{
-      color: #ffffff;
-      height: 100%;
-      display: flex;
-      align-items: center;
+      &>a{
+        color: #ffffff;
+        height: 100%;
+        display: flex;
+        align-items: center;
+      }
     }
   }
   .more-view{

@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js";
 import moment from "moment";
+import {DATA_DOUBLE} from "../types/constant";
 
 export function toFormatAccount(account: string, left: number = 6, right: number = 6) {
   if (!account) {
@@ -44,4 +45,13 @@ export function convertToShortScale(quantity:string|number) {
   }
 
   return new BigNumber(quantity_).dp(2) + suffixes[index];
+}
+export const doubleData = (num:string|number, type:'mul'|'div') => {
+  if (!num){
+    return num
+  }
+  if (type === 'div'){
+    return new BigNumber(num).dividedBy(DATA_DOUBLE).toString()
+  }
+  return new BigNumber(num).multipliedBy(DATA_DOUBLE).toString()
 }

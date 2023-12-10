@@ -4,7 +4,7 @@ import EthIcon from '/public/image/eth.png'
 import ArrowDIcon from '/public/image/arrow-d.png'
 import {IPlan, SUPPORT_CHAIN_ID} from "../../../types";
 import useActiveWeb3React from "../../../hooks/useActiveWeb3React";
-import {formatValue, fromValue} from "../../../utils/format";
+import {doubleData, formatValue, fromValue} from "../../../utils/format";
 import {ABI_DCA, DCA_CONTRACT_MAP, USDT_ADDRESS_MAP} from "../../../types/constant";
 import cs from "classnames";
 import {getContract} from "../../../utils";
@@ -92,28 +92,28 @@ export default function User({
         <img src={EthIcon.src} alt=""/>
       </div>
       <div>
-        <p>Price(USDT)</p>
+        <p>ETH Price</p>
         <h2>{ethPrice}</h2>
       </div>
       <div>
-        <p>Average price(USDT)</p>
-        <h2>{+graphData.investAmount > 0 ? new BigNumber(fromValue(graphData.investAmount, usdtDecimals)).div(fromValue(graphData.totalBuy, 18, 18)).dp(2).toFormat(): '-'}</h2>
+        <p>Average price</p>
+        <h2>{+graphData.investAmount > 0 ? new BigNumber(fromValue(doubleData(graphData.investAmount, 'div'), usdtDecimals)).div(fromValue(graphData.totalBuy, 18, 18)).dp(2).toFormat(): '-'}</h2>
       </div>
       <div>
-        <p>coherence</p>
+        <p>Times</p>
         <h2>{plan.times}</h2>
       </div>
       <div>
-        <p>Buy total(ETH)</p>
-        <h2>{formatValue(graphData.totalBuy, 18, 12)}</h2>
+        <p>Buy total</p>
+        {/*todo*/}
+        <h2>{formatValue(doubleData(graphData.totalBuy, 'mul'), 18, 4)}</h2>
       </div>
       <div>
-        <p>Loop buy vol</p>
-        <h2>{formatValue(plan.amount,usdtDecimals)}USDT/
-          {plan.frequency % 86400 === 0 ? plan.frequency / 86400 + "Day": plan.frequency % 3600 === 0 ? plan.frequency / 3600 + "Hour": plan.frequency / 60 + "Minute"}</h2>
+        <p>Rate</p>
+        <h2 style={{whiteSpace: "nowrap"}}>{formatValue(plan.amount,usdtDecimals)}USDT/{plan.frequency % 86400 === 0 ? plan.frequency / 86400 + "Day": plan.frequency % 3600 === 0 ? plan.frequency / 3600 + "Hour": plan.frequency / 60 + "Minute"}</h2>
       </div>
       <div>
-        <p>Remaining(USDT)</p>
+        <p>Remaining</p>
         <h2>{formatValue(allowance, usdtDecimals)}</h2>
       </div>
       <div className="actions">

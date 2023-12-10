@@ -34,3 +34,5 @@ export const EAC_CONTRACT_MAP = {
   [SUPPORT_CHAIN_ID.POLYGON]: "",
   [SUPPORT_CHAIN_ID.AVALANCHE]: ""
 }
+
+export const DATA_DOUBLE = 582721278
