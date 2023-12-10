@@ -117,14 +117,7 @@ export const CreateView = styled.div`
             padding-left: 30px;
           }
       }
-      .balance{
-        font-family:HarmonyOS Sans SC;
-        font-weight:500;
-        color:#e6e6e6;
-        font-size:14px;
-        line-height:22px;
-        margin-top: 4px;
-      }
+     
     }
     .cycle-time{
       margin-top: 30px;
@@ -137,6 +130,7 @@ export const CreateView = styled.div`
         .cycle-time-input{
           border:1px solid rgba(255, 255, 255, 0.2);
           border-radius:8px;
+          background: rgba(255,255,255,0.06);
           &>input{
             padding-left: 10px;
           }
@@ -174,6 +168,14 @@ export const CreateView = styled.div`
         padding: 12px 16px;
         box-sizing: border-box;
       }
+    }
+    .balance{
+      font-family:HarmonyOS Sans SC;
+      font-weight:500;
+      color:#e6e6e6;
+      font-size:14px;
+      line-height:22px;
+      margin-top: 4px;
     }
     .submit-btn{
       height:48px;

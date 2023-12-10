@@ -109,7 +109,8 @@ export default function User({
       </div>
       <div>
         <p>Loop buy vol</p>
-        <h2>{formatValue(plan.amount,usdtDecimals)}USDT/D</h2>
+        <h2>{formatValue(plan.amount,usdtDecimals)}USDT/
+          {plan.frequency % 86400 === 0 ? plan.frequency / 86400 + "Day": plan.frequency % 3600 === 0 ? plan.frequency / 3600 + "Hour": plan.frequency / 60 + "Minute"}</h2>
       </div>
       <div>
         <p>Remaining(USDT)</p>

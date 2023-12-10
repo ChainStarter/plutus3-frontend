@@ -54,6 +54,7 @@ export const UserView = styled.div`
         font-size: 18px;
         line-height: 23px;
         margin-top: 8px;
+        word-break: break-all;
       }
     }
 

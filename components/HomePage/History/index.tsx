@@ -44,7 +44,6 @@ address
     getHistory()
   }, [account])
   return <HistoryView>
-    <h1>Logs</h1>
     <div className="history-item history-title">
       <div>Time</div>
       <div>Buy val(USDT)</div>

@@ -17,19 +17,20 @@ import cs from "classnames";
 import {setShowConnectModal, setShowSuccessModal} from "../../../context/store/app";
 import Poster1Img from "/public/image/poster1.png";
 
-const dimensions = 60//86400
 
 export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPlan | null }) {
   const {account, library, chainId} = useActiveWeb3React()
   // 每次定投多少
   const [amount, setAmount] = useState<string>('');
-  // 间隔多久投一次
-  const [days, setDays] = useState<string>('');
+  // 间隔多久投一次 interval
+  const [tap, setTap] = useState<string>('');
+  // 总投资次数 times
   const [count, setCount] = useState<string>('')
   const {balance: usdtBalance, updateBalance, decimals: usdtDecimals} = useUsdtBalance()
   const {allowance, updateAllowance} = useUsdtAllowance()
   const dispatch = useDispatch()
   const [loading, setLoading] = useState<boolean>(false)
+  const [dimensions, setDimensions] = useState<number>(86400)
 
   const totalAmount = useMemo(() => {
     if (!amount || !count){
@@ -43,9 +44,11 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
     }
     setLoading(true)
     const contract = getContract(library, ABI_DCA, DCA_CONTRACT_MAP[chainId as SUPPORT_CHAIN_ID])
+    console.log(+tap*dimensions,
+      toValue(totalAmount, usdtDecimals), toValue(amount, usdtDecimals))
     contract.methods[isUpdate ? 'updatePlan' : 'createPlan'](
-      +days*dimensions,
-      toValue(totalAmount, usdtDecimals)
+      +tap*dimensions,
+      toValue(amount, usdtDecimals)
     ).send({from: account}).on("receipt", async function () {
       await getPlan()
       await updateAllowance()
@@ -79,25 +82,29 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
   }
   const setRef: any = useRef()
   useMemo(() => {
-    if (plan && !setRef.current) {
-      setDays(new BigNumber(plan.frequency).div(dimensions).dp(0, 1).toString())
+    if (plan) {
+      const dimensions_ = plan.frequency % 86400 === 0 ? 86400: plan.frequency % 3600 === 0 ? 3600 : 60
+      setTap(new BigNumber(plan.frequency).div(dimensions_).dp(0, 1).toString())
+      setDimensions(dimensions_)
       setAmount(fromValue(plan.amount, usdtDecimals))
     }
   }, [plan, usdtDecimals, allowance])
+
   useMemo(() => {
     if (plan &&+allowance>0&& !setRef.current) {
       setRef.current = true
       // 总共周期 = 授权量 / 一个周期的量 * 周期
       const count_ = new BigNumber(allowance).div(plan.amount).toString()
-      setCount(count_)
+      setCount(count_ || '0')
     }
   }, [plan, allowance])
+  console.log("allowance", allowance)
   const showApprove = useMemo(() => {
     if (!totalAmount) {
       return false
     }
-    console.log("new BigNumber(allowance)", new BigNumber(allowance).toString(), toValue(totalAmount, usdtDecimals).toString(), new BigNumber(allowance).lt(toValue(totalAmount, usdtDecimals)))
-    if (new BigNumber(allowance).lt(toValue(totalAmount, usdtDecimals))) {
+
+    if (!new BigNumber(allowance).eq(toValue(totalAmount, usdtDecimals))) {
       return true
     }
     return false
@@ -109,7 +116,7 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
         periodic schedule.</p>
       <div className="select-assets">
         <div className="select-assets-item">
-          <p className="form-title">Spend</p>
+          <p className="form-title">From</p>
           <div>
             <div>
               <img src={USDTIcon.src} alt=""/>
@@ -122,7 +129,7 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
           <img src={ChangeIcon.src} alt=""/>
         </div>
         <div className="select-assets-item">
-          <p className="form-title">Receive</p>
+          <p className="form-title">To</p>
           <div>
             <div>
               <img src={ETHIcon.src} alt=""/>
@@ -134,40 +141,40 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
 
       </div>
       <div className="input-amount">
-        <p className="form-title">Spend Amount</p>
+        <p className="form-title">Amount</p>
         <div className="input-amount-box">
           <div className="amount-symbol">
             <img src={USDTIcon.src} alt=""/>
           </div>
           <input className="primary-input" type="number" value={amount} onChange={(e) => setAmount(e.target.value)}
-                 placeholder="Input amount"/>
+                 placeholder="Amount"/>
         </div>
-        <div className="balance">Balance: {formatValue(usdtBalance, usdtDecimals, 1)}USDT</div>
       </div>
       <div className="input-amount">
-        <p className="form-title">Spend Count</p>
+        <p className="form-title">Times</p>
         <div className="input-amount-box">
           <input style={{paddingLeft: 0}} className="primary-input" type="number" value={count} onChange={(e) => setCount(e.target.value)}
-                 placeholder="Input Count"/>
+                 placeholder="Times"/>
         </div>
-        <div className="balance">Balance: {formatValue(usdtBalance, usdtDecimals, 1)}USDT</div>
       </div>
       <div className="cycle-time">
-        <p className="form-title">Complete cycle({dimensions === 60 ? 'minutes' : 'days'})</p>
+        <p className="form-title">Interval</p>
         <div className="cycle-time-box">
           <div className="cycle-time-input">
-            <input className="primary-input" type="number" placeholder="days" value={days}
-                   onChange={(e) => setDays(e.target.value)}/>
+            <input className="primary-input" type="number" placeholder="Interval" value={tap}
+                   onChange={(e) => setTap(e.target.value)}/>
           </div>
-          <div className={cs("cycle-time-btn", +days === 7 && "active")} onClick={() => setDays('7')}>7</div>
-          <div className={cs("cycle-time-btn", +days === 15 && "active")} onClick={() => setDays('15')}>15</div>
-          <div className={cs("cycle-time-btn", +days === 30 && "active")} onClick={() => setDays('30')}>30</div>
+          <div className={cs("cycle-time-btn", dimensions === 60 && "active")} onClick={() => setDimensions(60)}>Minutes</div>
+          <div className={cs("cycle-time-btn", dimensions === 3600 && "active")} onClick={() => setDimensions(3600)}>Hours</div>
+          <div className={cs("cycle-time-btn", dimensions === 86400 && "active")} onClick={() => setDimensions(86400)}>Days</div>
         </div>
       </div>
       <div className="total-amount">
-        <p className="form-title">Total spend</p>
-        <div>{new BigNumber(totalAmount).toFormat()}USDT</div>
+        <p className="form-title">Total</p>
+        <div>{new BigNumber(totalAmount).toFormat()} USDT</div>
       </div>
+      <div className="balance">Balance: {formatValue(usdtBalance, usdtDecimals, 1)}USDT</div>
+
       {
         (function () {
           if (!account) {

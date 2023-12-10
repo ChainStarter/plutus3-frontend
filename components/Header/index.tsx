@@ -27,7 +27,7 @@ export default function Header() {
       <div className="nav">
         <Link href="/" className={cs(router.pathname === "/" && "active")}>DCA</Link>
         <Link href="/grid_trading" className={cs(router.pathname === "/grid_trading" && "active")}>Grid</Link>
-        <Link href="/tactics_trading" className={cs(router.pathname === "/tactics_trading" && "active")}>Tactics</Link>
+        <Link href="/tactics_trading" className={cs(router.pathname === "/strategy" && "active")}>Strategy</Link>
       </div>
       <div className="actions">
         <div className="connect-wallet-btn" onClick={onConnectWallet}>
