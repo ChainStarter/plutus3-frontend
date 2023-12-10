@@ -106,7 +106,7 @@ export default function User({
       <div>
         <p>Buy total</p>
         {/*todo*/}
-        <h2>{formatValue(doubleData(graphData.totalBuy, 'mul'), 18, 4)}</h2>
+        <h2>{formatValue(doubleData(graphData.totalBuy, 'mul'), 18, 4)} ETH</h2>
       </div>
       <div>
         <p>Rate</p>
@@ -114,7 +114,7 @@ export default function User({
       </div>
       <div>
         <p>Remaining</p>
-        <h2>{formatValue(allowance, usdtDecimals)}</h2>
+        <h2>{formatValue(allowance, usdtDecimals)} USDT</h2>
       </div>
       <div className="actions">
         <div className="action-btn" onClick={() => setTab(0)}>
