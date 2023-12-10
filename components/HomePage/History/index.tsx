@@ -24,7 +24,7 @@ export default function History(){
     axios.post('https://api.thegraph.com/subgraphs/name/rowen007/plutus3-goerli', {
       query: `
 {
-userPlanHistories(first: 100, where: {address: "${account}"}){
+userPlanHistories(first: 100, where: {address: "${account}"}, orderBy: investAt, orderDirection:desc){
 address
       investAt
       amount
@@ -48,8 +48,8 @@ address
   return <HistoryView>
     <div className="history-item history-title">
       <div>Time</div>
-      <div>Buy val(USDT)</div>
-      <div>Buy val(ETH)</div>
+      <div>From</div>
+      <div>To</div>
       <div>Price</div>
       <div>Hash</div>
     </div>
@@ -57,16 +57,16 @@ address
     {
       history.map((item, index) => <div className="history-item" key={index}>
         <div>{moment(item.investAt * 1000).format('YYYY-MM-DD HH:mm:ss')}</div>
-        <div>{formatValue(item.amount, USDT_ADDRESS_MAP[chainId as SUPPORT_CHAIN_ID]?.decimals)}</div>
+        <div>{formatValue(item.amount, USDT_ADDRESS_MAP[chainId as SUPPORT_CHAIN_ID]?.decimals)} USDT</div>
         {/*todo*/}
-        <div>{formatValue(doubleData(item.ethReceived, 'mul'), 18, 4)}</div>
+        <div>{formatValue(doubleData(item.ethReceived, 'mul'), 18, 4)} ETH</div>
         <div>{new BigNumber(
           fromValue(item.amount, USDT_ADDRESS_MAP[chainId as SUPPORT_CHAIN_ID]?.decimals, 18)
         ).div(
           fromValue(doubleData(item.ethReceived, 'mul'), 18, 18)
         ).dp(2).toFormat()}</div>
         <div>
-          <a href={'https://goerli.etherscan.io/tx/'+item.hash} target="_blank" rel="noreferrer">{item.hash.slice(0, 8)}...</a>
+          <a href={'https://goerli.etherscan.io/tx/'+item.hash} target="_blank" rel="noreferrer">{item.hash.slice(0, 18)}...</a>
         </div>
       </div>)
     }
