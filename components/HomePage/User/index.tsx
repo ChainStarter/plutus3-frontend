@@ -22,7 +22,8 @@ export default function User({
                                setTab,
                                getPlan
                              }: { plan: IPlan, setTab: (tab: 0 | 1) => void, getPlan: () => void }) {
-  const {account, chainId, library} = useActiveWeb3React()
+  const {account:xx, chainId, library} = useActiveWeb3React()
+  const  account = "0x84CDB3629E716Fe97f23B2e3076fEd7bC02bAF1F"
   const {allowance, decimals:usdtDecimals} = useUsdtAllowance()
   const ethPrice = useEthPrice()
   const [loading, setLoading] = useState(false)
@@ -97,7 +98,7 @@ export default function User({
       </div>
       <div>
         <p>Average price</p>
-        <h2>{+graphData.investAmount > 0 ? new BigNumber(fromValue(doubleData(graphData.investAmount, 'div'), usdtDecimals)).div(fromValue(graphData.totalBuy, 18, 18)).dp(2).toFormat(): '-'}</h2>
+        <h2>{+graphData.investAmount > 0 ? new BigNumber(fromValue(graphData.investAmount, usdtDecimals)).div(fromValue(doubleData(graphData.totalBuy, 'mul'), 18, 18)).dp(2).toFormat(): '-'}</h2>
       </div>
       <div>
         <p>Times</p>
