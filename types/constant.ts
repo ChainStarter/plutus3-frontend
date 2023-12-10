@@ -35,4 +35,4 @@ export const EAC_CONTRACT_MAP = {
   [SUPPORT_CHAIN_ID.AVALANCHE]: ""
 }
 
-export const DATA_DOUBLE = 582721278
+export const DATA_DOUBLE = 1//582721278

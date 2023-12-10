@@ -6,8 +6,8 @@ export const UserView = styled.div`
     border: 1px solid rgba(151, 151, 151, 0.2);
     border-radius: 20px;
     display: grid;
-    grid-template-columns: 50px 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-column-gap: 40px;
+    grid-template-columns: 50px 100px 1fr 70px 1fr 1fr 1fr 100px;
+    grid-column-gap: 30px;
     padding: 30px 40px;
     box-sizing: border-box;
     position: relative;
