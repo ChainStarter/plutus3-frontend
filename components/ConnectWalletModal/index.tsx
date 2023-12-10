@@ -27,11 +27,11 @@ export default function ConnectWalletModal(){
           <img src={SUPPORT_CHAIN_INFO[SUPPORT_CHAIN_ID.GOERLI].icon} alt=""/>
           <p>{SUPPORT_CHAIN_INFO[SUPPORT_CHAIN_ID.GOERLI].name}</p>
         </div>
-        <div onClick={() => onConnect(SUPPORT_CHAIN_ID.POLYGON)}>
+        <div style={{opacity: 0.5, cursor: "not-allowed"}}>
           <img src={SUPPORT_CHAIN_INFO[SUPPORT_CHAIN_ID.POLYGON].icon} alt=""/>
           <p>{SUPPORT_CHAIN_INFO[SUPPORT_CHAIN_ID.POLYGON].name}</p>
         </div>
-        <div onClick={() => onConnect(SUPPORT_CHAIN_ID.AVALANCHE)}>
+        <div style={{opacity: 0.5, cursor: "not-allowed"}}>
           <img src={SUPPORT_CHAIN_INFO[SUPPORT_CHAIN_ID.AVALANCHE].icon} alt=""/>
           <p>{SUPPORT_CHAIN_INFO[SUPPORT_CHAIN_ID.AVALANCHE].name}</p>
         </div>

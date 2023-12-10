@@ -28,6 +28,12 @@ export const HistoryView = styled.div`
       word-break: break-all;
       padding: 5px;
     }
+    &>a{
+      color: #ffffff;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
   }
   .more-view{
     margin-top: 20px;

@@ -1,5 +1,6 @@
 import erc20Abi from './abi/erc20.json'
 import dcaAbi from './abi/dca.json'
+import eacAbi from './abi/eac.json'
 import {SUPPORT_CHAIN_ID} from "./index";
 export const LANG_LOCAL_KEY = "LANG_LOCAL_KEY";
 export const THEME_LOCAL_KEY = "THEME_LOCAL_KEY";
@@ -7,6 +8,7 @@ export const THEME_LOCAL_KEY = "THEME_LOCAL_KEY";
 export const ENV_PRODUCTION = process.env.APP_ENV === 'pro'
 export const ABI_ERC20 = erc20Abi
 export const ABI_DCA = dcaAbi
+export const ABI_ECA= eacAbi
 export const USDT_ADDRESS_MAP = {
   [SUPPORT_CHAIN_ID.GOERLI]: {
     address: "0xC2C527C0CACF457746Bd31B2a698Fe89de2b6d49",
@@ -23,7 +25,12 @@ export const USDT_ADDRESS_MAP = {
 }
 
 export const DCA_CONTRACT_MAP = {
-  [SUPPORT_CHAIN_ID.GOERLI]: "0x5649800F04aa1FB684b3e4217f84956f67CD49ce",
+  [SUPPORT_CHAIN_ID.GOERLI]: "0x42b993E9c44Cae25aeF6CD67dC74A8bC132B9440",
+  [SUPPORT_CHAIN_ID.POLYGON]: "",
+  [SUPPORT_CHAIN_ID.AVALANCHE]: ""
+}
+export const EAC_CONTRACT_MAP = {
+  [SUPPORT_CHAIN_ID.GOERLI]: "0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e",
   [SUPPORT_CHAIN_ID.POLYGON]: "",
   [SUPPORT_CHAIN_ID.AVALANCHE]: ""
 }

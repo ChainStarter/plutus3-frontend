@@ -1,18 +1,48 @@
 import {HistoryView} from "./style";
-import {toFormatAccount} from "../../../utils/format";
+import {formatValue, fromValue, toFormatAccount} from "../../../utils/format";
+import axios from "axios";
+import {useMemo, useState} from "react";
+import useActiveWeb3React from "../../../hooks/useActiveWeb3React";
+import moment from "moment";
+import {USDT_ADDRESS_MAP} from "../../../types/constant";
+import {SUPPORT_CHAIN_ID} from "../../../types";
+import BigNumber from "bignumber.js";
 
 export default function History(){
-  const list = [
-    {
-      tx: "0x46bf79b8515ee4b6a5c8803b5e4edb37676939b1965f089adf3c69d9fcda626e"
-    },
-    {
-      tx: "0x46bf79b8515ee4b6a5c8803b5e4edb37676939b1965f089adf3c69d9fcda626e"
-    },
-    {
-      tx: "0x46bf79b8515ee4b6a5c8803b5e4edb37676939b1965f089adf3c69d9fcda626e"
+  const {account, chainId} = useActiveWeb3React()
+  const [history, setHistory] = useState<{
+    investAt: number,//定投时间
+    investAmount: string,//定投usdt
+    ethReceived: string//收到的ETH
+    hash: string
+  }[]>([])
+  const getHistory = () => {
+    if (!account) {
+      return
     }
-  ]
+    axios.post('https://api.thegraph.com/subgraphs/name/rowen007/plutus3-goerli', {
+      query: `
+{
+userPlanHistories(first: 100, where: {address: "${account}"}){
+address
+      investAt
+      investAmount
+      ethReceived
+      hash
+    }
+}
+      `
+    }).then(res => {
+      if (res.data.data.userPlanHistories.length > 0) {
+        console.log("history", res.data.data.userPlanHistories)
+        setHistory(res.data.data.userPlanHistories)
+      }
+    })
+
+  }
+  useMemo(() => {
+    getHistory()
+  }, [account])
   return <HistoryView>
     <h1>Logs</h1>
     <div className="history-item history-title">
@@ -24,16 +54,17 @@ export default function History(){
     </div>
 
     {
-      list.map((item, index) => <div className="history-item" key={index}>
-        <div>2023/12/11</div>
-        <div>100</div>
-        <div>0.01</div>
-        <div>3,000</div>
-        <div>{item.tx.slice(0, 8)}...</div>
+      history.map((item, index) => <div className="history-item" key={index}>
+        <div>{moment(item.investAt * 1000).format('YYYY-MM-DD HH:mm:ss')}</div>
+        <div>{formatValue(item.investAmount, USDT_ADDRESS_MAP[chainId as SUPPORT_CHAIN_ID]?.decimals)}</div>
+        <div>{formatValue(item.ethReceived, 18, 12)}</div>
+        <div>{new BigNumber(
+          fromValue(item.investAmount, USDT_ADDRESS_MAP[chainId as SUPPORT_CHAIN_ID]?.decimals, 18)
+        ).div(
+          fromValue(item.ethReceived, 18, 18)
+        ).dp(2).toFormat()}</div>
+        <a href={'https://goerli.etherscan.io/tx/'+item.hash} target="_blank" rel="noreferrer">{item.hash.slice(0, 8)}...</a>
       </div>)
     }
-    <div className="more-view">
-      <span>Load More 👇</span>
-    </div>
   </HistoryView>
 }

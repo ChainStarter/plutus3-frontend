@@ -22,6 +22,7 @@ export default function Header() {
     <div className="header-view">
       <div className="logo">
         <img src={LogoPng.src} alt=""/>
+        <span>Beta</span>
       </div>
       <div className="nav">
         <Link href="/" className={cs(router.pathname === "/" && "active")}>DCA</Link>

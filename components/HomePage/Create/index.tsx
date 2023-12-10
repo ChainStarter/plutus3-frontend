@@ -17,10 +17,15 @@ import cs from "classnames";
 import {setShowConnectModal, setShowSuccessModal} from "../../../context/store/app";
 import Poster1Img from "/public/image/poster1.png";
 
+const dimensions = 60//86400
+
 export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPlan | null }) {
   const {account, library, chainId} = useActiveWeb3React()
+  // 每次定投多少
   const [amount, setAmount] = useState<string>('');
+  // 间隔多久投一次
   const [days, setDays] = useState<string>('');
+  const [count, setCount] = useState<string>('')
   const {balance: usdtBalance, updateBalance, decimals: usdtDecimals} = useUsdtBalance()
   const {allowance, updateAllowance} = useUsdtAllowance()
   const dispatch = useDispatch()
@@ -30,8 +35,8 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
     if (!amount || !days){
       return '0';
     }
-    return +amount * +days
-  }, [amount, days])
+    return +amount * +count
+  }, [amount, count])
   const onCreate = (isUpdate:boolean) => {
     if (loading || !totalAmount || +totalAmount <= 0) {
       return
@@ -39,7 +44,7 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
     setLoading(true)
     const contract = getContract(library, ABI_DCA, DCA_CONTRACT_MAP[chainId as SUPPORT_CHAIN_ID])
     contract.methods[isUpdate ? 'updatePlan' : 'createPlan'](
-      days,
+      +days*dimensions,
       toValue(totalAmount, usdtDecimals)
     ).send({from: account}).on("receipt", async function () {
       await getPlan()
@@ -61,7 +66,7 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
     const contract = getContract(library, ABI_ERC20, USDT_ADDRESS_MAP[chainId as SUPPORT_CHAIN_ID].address)
     contract.methods.approve(
       DCA_CONTRACT_MAP[chainId as SUPPORT_CHAIN_ID],
-      toValue(amount, usdtDecimals)
+      toValue(totalAmount, usdtDecimals)
     ).send({from: account}).on("receipt", async function () {
       await updateAllowance()
       dispatch(setShowSuccessModal(true))
@@ -74,14 +79,18 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
   }
   useMemo(() => {
     if (plan) {
-      setDays(String(plan.frequency))
+      setDays(new BigNumber(plan.frequency).div(dimensions).dp(0, 1).toString())
       setAmount(fromValue(plan.amount, usdtDecimals))
+      // 总共周期 = 授权量 / 一个周期的量 * 周期
+      const count_ = new BigNumber(allowance).div(plan.amount).toString()
+      setCount(count_)
     }
   }, [plan, usdtDecimals])
   const showApprove = useMemo(() => {
     if (!totalAmount) {
       return false
     }
+    console.log("new BigNumber(allowance)", new BigNumber(allowance).toString(), toValue(totalAmount, usdtDecimals).toString(), new BigNumber(allowance).lt(toValue(totalAmount, usdtDecimals)))
     if (new BigNumber(allowance).lt(toValue(totalAmount, usdtDecimals))) {
       return true
     }
@@ -129,8 +138,16 @@ export default function Create({getPlan, plan}: { getPlan: () => void, plan: IPl
         </div>
         <div className="balance">Balance: {formatValue(usdtBalance, usdtDecimals, 1)}USDT</div>
       </div>
+      <div className="input-amount">
+        <p className="form-title">Spend Count</p>
+        <div className="input-amount-box">
+          <input style={{paddingLeft: 0}} className="primary-input" type="number" value={count} onChange={(e) => setCount(e.target.value)}
+                 placeholder="Input Count"/>
+        </div>
+        <div className="balance">Balance: {formatValue(usdtBalance, usdtDecimals, 1)}USDT</div>
+      </div>
       <div className="cycle-time">
-        <p className="form-title">Complete cycle</p>
+        <p className="form-title">Complete cycle({dimensions === 60 ? 'minutes' : 'days'})</p>
         <div className="cycle-time-box">
           <div className="cycle-time-input">
             <input className="primary-input" type="number" placeholder="days" value={days}

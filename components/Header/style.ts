@@ -16,9 +16,23 @@ export const HeaderView = styled.div`
 
     .logo {
       width: 96px;
+      position: relative;
+
 
       & > img {
         width: 100%;
+      }
+
+      & > span {
+        position: absolute;
+        right: 0;
+        top: 0;
+        transform: translate(100%, -10px);
+        padding: 2px 5px;
+        background: #d98400;
+        color: #ffffff;
+        border-radius: 5px;
+        font-size: 12px;
       }
     }
 
@@ -26,6 +40,7 @@ export const HeaderView = styled.div`
       flex: 1;
       display: flex;
       align-items: center;
+      padding-left: 30px;
 
       & > a {
         font-family: PingFang SC;

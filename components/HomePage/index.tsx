@@ -10,6 +10,7 @@ import {multicallClient, newContract} from "@chainstarter/multicall-client.js";
 import Create from "./Create";
 import User from "./User";
 import cs from "classnames";
+import axios from "axios";
 
 export default function HomePage() {
   const {account, chainId} = useActiveWeb3React()
@@ -33,8 +34,8 @@ export default function HomePage() {
     return multicallClient([
       contract.plans(account)
     ]).then(res => {
-      if (res[0].success) {
-        console.log(res)
+      console.log(res)
+      if (res[0].success && +res[0].returnData[1]!==0) {
         const data = res[0].returnData
         setPlan({
           index: data[0],
@@ -48,23 +49,24 @@ export default function HomePage() {
       }
     })
   }
+
   useMemo(() => {
     getPlan()
   }, [account])
   return <HomePageView>
     <div className="home-view">
-      <div className="tabs">
-        <div className={cs(tab === 0 && "active")} onClick={() => setTab(0)}>
-          <span>Create DCA</span>
-          <div/>
-        </div>
-        {
-          plan && <div className={cs(tab === 1 && "active")} onClick={() => setTab(1)}>
+      {
+        plan  ? <div className="tabs">
+          <div className={cs(tab === 0 && "active")} onClick={() => setTab(0)}>
+            <span>Create DCA</span>
+            <div/>
+          </div>
+          <div className={cs(tab === 1 && "active")} onClick={() => setTab(1)}>
             <span>My DCA</span>
             <div/>
           </div>
-        }
-      </div>
+        </div>: <div style={{width: "100%", height: "30px"}}/>
+      }
       <div style={{display: tab === 0 ? "block" : "none"}}>
         <Create getPlan={getPlan} plan={plan}/>
       </div>
