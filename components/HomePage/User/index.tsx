@@ -22,8 +22,7 @@ export default function User({
                                setTab,
                                getPlan
                              }: { plan: IPlan, setTab: (tab: 0 | 1) => void, getPlan: () => void }) {
-  const {account:xx, chainId, library} = useActiveWeb3React()
-  const  account = "0x84CDB3629E716Fe97f23B2e3076fEd7bC02bAF1F"
+  const {account, chainId, library} = useActiveWeb3React()
   const {allowance, decimals:usdtDecimals} = useUsdtAllowance()
   const ethPrice = useEthPrice()
   const [loading, setLoading] = useState(false)
