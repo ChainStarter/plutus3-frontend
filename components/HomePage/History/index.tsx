@@ -12,7 +12,8 @@ export default function History(){
   const {account, chainId} = useActiveWeb3React()
   const [history, setHistory] = useState<{
     investAt: number,//定投时间
-    investAmount: string,//定投usdt
+    investAmount: string,//总定投usdt
+    amount: string,//单次定投usdt
     ethReceived: string//收到的ETH
     hash: string
   }[]>([])
@@ -26,6 +27,7 @@ export default function History(){
 userPlanHistories(first: 100, where: {address: "${account}"}){
 address
       investAt
+      amount
       investAmount
       ethReceived
       hash
@@ -55,10 +57,10 @@ address
     {
       history.map((item, index) => <div className="history-item" key={index}>
         <div>{moment(item.investAt * 1000).format('YYYY-MM-DD HH:mm:ss')}</div>
-        <div>{formatValue(item.investAmount, USDT_ADDRESS_MAP[chainId as SUPPORT_CHAIN_ID]?.decimals)}</div>
+        <div>{formatValue(item.amount, USDT_ADDRESS_MAP[chainId as SUPPORT_CHAIN_ID]?.decimals)}</div>
         <div>{formatValue(item.ethReceived, 18, 12)}</div>
         <div>{new BigNumber(
-          fromValue(item.investAmount, USDT_ADDRESS_MAP[chainId as SUPPORT_CHAIN_ID]?.decimals, 18)
+          fromValue(item.amount, USDT_ADDRESS_MAP[chainId as SUPPORT_CHAIN_ID]?.decimals, 18)
         ).div(
           fromValue(item.ethReceived, 18, 18)
         ).dp(2).toFormat()}</div>
